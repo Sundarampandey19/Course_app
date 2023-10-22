@@ -25,7 +25,6 @@ function findIndex(courseId){
 
 
 function coursePurchase(courseid, index) {
-    // console.log("From purchaser")
     if (users[index] && users[index].purchased) {
       users[index].purchased.push(courseid);
       console.log(users[index].purchased);
@@ -39,8 +38,10 @@ function coursePurchase(courseid, index) {
 
 //Middlewares
 
+
+//User authentication function
+
 function Authenticate(req,res,next){
-    console.log("From auth")
     const {username,password} = req.headers
     let userFound = false
     let index = null
@@ -66,8 +67,9 @@ function Authenticate(req,res,next){
        
 }
 
+//Admin Authentication function
+
 function adminAuth(req,res,next){
-    console.log("From auth")
     const {username,password} = req.headers
     let userFound = false
     let index = null
@@ -95,6 +97,8 @@ function adminAuth(req,res,next){
 
 // User routes
 
+//Route to Signup for user
+
 app.post('/users/signup',(req,res)=>{
     const {username,password}= req.body
     const id = Math.floor(1000+Math.random()*9000)
@@ -108,14 +112,20 @@ app.post('/users/signup',(req,res)=>{
     res.send({"Message":"user created successfully"})
 })
 
+//Route to Login for user 
+
 app.post('/users/login',Authenticate,(req,res)=>{   
     res.status(200).json({message:"Login successful"})
 
 })
 
+// Route to List all the courses
+
 app.get('/users/courses',Authenticate,(req,res)=>{
     res.status(200).json({courses:courses})
 })
+
+//Route to Purchase a course 
 
 app.post('/users/courses',Authenticate,(req,res)=>{
     const {courseid} = req.query
@@ -129,6 +139,8 @@ app.post('/users/courses',Authenticate,(req,res)=>{
     }
 })
 
+//Route to show the purchased course to the user
+
 app.get('/users/purchasedCourses',Authenticate,(req,res)=>{
     const i= req.body.userid
     res.send(users[i].purchased)
@@ -136,6 +148,9 @@ app.get('/users/purchasedCourses',Authenticate,(req,res)=>{
 })
 
 //Admin routes
+
+
+//Sign up route for admin
 
 app.post('/admin/signup',(req,res)=>{
     const {username,password}= req.body
@@ -149,10 +164,14 @@ app.post('/admin/signup',(req,res)=>{
     res.status(200).json({message:"Admin created successfully"})
 })
 
+//Login Route for admin
+
 app.post('/admin/login',adminAuth,(req,res)=>{
     res.status(200).json({message:" logged in successfully"})
 
 })
+
+//Route to add a new course 
 
 app.post('/admin/courses',adminAuth,(req,res)=>{
     const {title,description,price,imagelink,published} = req.body
@@ -168,6 +187,8 @@ app.post('/admin/courses',adminAuth,(req,res)=>{
     courses.push(newCourse)
     res.status(200).json({message:"Course created successfully",id:id})
 })
+
+//Route to update a particular course
 
 app.put('/admin/courses/:courseid',adminAuth,(req,res)=>{
     const courseid = req.params.courseid
@@ -187,9 +208,14 @@ app.put('/admin/courses/:courseid',adminAuth,(req,res)=>{
     res.status(200).json({message:"Updated the course successfully", updatesDetails: updatedCourse})
 })
 
+//Gets all the courses for admin
+
 app.get('/admin/courses',adminAuth,(req,res)=>{
     res.status(200).send(courses)
 })
+
+
+//404 For any other routes
 
 app.use((req, res, next) => {
     res.status(404).send();
