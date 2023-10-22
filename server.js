@@ -4,9 +4,9 @@ const port = process.env.PORT || 3000
 
 app.use(express.json())
 
-let courses = [{ id: 1, title: 'course title', description: 'course description', price: 100, imageLink: 'https://linktoimage.com', published: true }]
+let courses = []
 
-let users = [{ id: 4934, username: 'Lelo_Pudina', password: 'Bhabhi' , purchased:[]} ]
+let users = [ ]
 
 let admin = []
 
